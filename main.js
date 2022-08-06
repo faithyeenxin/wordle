@@ -79,6 +79,7 @@ const gameOver = (message) => {
   }, 1000);
   const $startBtn = $(".modal_button_restart");
   $startBtn.on("click", () => {
+    $message.remove();
     resetGame();
     renderTileBoard();
     $modal.removeClass("modal_visible");
