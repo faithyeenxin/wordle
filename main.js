@@ -100,7 +100,17 @@ const showCorrect = () => {
   gameOver("You got it!");
 };
 
+const flipTiles = () => {
+  const $rowTiles = $(`#row_${gameState.currentRow}`).children();
+  $rowTiles.each((index, tile) => {
+    console.log(tile);
+    //when i add the class to existing tiles created by jQuery, nothing happens :(
+    $(tile).addClass("yellow");
+  });
+};
+
 const checkAnswer = () => {
+  flipTiles();
   gameState.gameRows[gameState.currentRow].join("") === word
     ? showCorrect()
     : showIncorrect();
