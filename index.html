@@ -4,27 +4,35 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/style.css" />
     <script type="module" src="/main.js"></script>
+    <link rel="stylesheet" href="/style.css" />
     <title>Vite App</title>
   </head>
   <body>
     <!-- Start Modal -->
-
-    <!-- commented out for now so that i can work on the game -->
-    <!-- <div class="modal">
+    <div class="modal modal_start">
       <div class="modal_container">
-        <h1>Welcome!</h1>
-        <p>
+        <h1 class="modal_title">Welcome!</h1>
+        <p class="modal_message">
           Players have six attempts to guess a five-letter word, with feedback
           given for each guess in the form of colored tiles indicating when
           letters match (green) or occupy the correct position (orange)!
         </p>
         <div class="modal_buttons">
-          <button class="modal_button">Start</button>
+          <button class="modal_button_start">Start</button>
         </div>
       </div>
-    </div> -->
+    </div>
+    <!-- GameOver Modal -->
+    <div class="modal modal_gameover">
+      <div class="modal_container">
+        <h1 class="modal_title"></h1>
+        <p class="modal_message">Would you like to play again?</p>
+        <div class="modal_buttons">
+          <button class="modal_button_restart">Replay!</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Game -->
     <div class="game_container">

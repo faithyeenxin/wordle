@@ -68,6 +68,17 @@ const resetGame = () => {
 
 const gameOver = (message) => {
   console.log("Game over! " + message);
+  /* Game Over Modal*/
+  $(".modal_title").text(message);
+  const $modal = $(".modal_gameover");
+  $modal.addClass("modal_visible");
+
+  const $startBtn = $(".modal_button_restart");
+  $startBtn.on("click", () => {
+    resetGame();
+    renderTileBoard();
+    $modal.removeClass("modal_visible");
+  });
 };
 
 const showIncorrect = () => {
@@ -76,15 +87,15 @@ const showIncorrect = () => {
     gameState.currentRow++;
     gameState.currentTile = 0;
   } else {
-    gameOver("You didn't get the answer correct!");
+    gameOver("You were wrong!");
   }
 };
 
 const showCorrect = () => {
-  gameOver("You got the answer correct!");
+  gameOver("You got it!");
 };
 
-const checkAnswer = (keyLetter) => {
+const checkAnswer = () => {
   gameState.gameRows[gameState.currentRow].join("") === word
     ? showCorrect()
     : showIncorrect();
@@ -92,7 +103,7 @@ const checkAnswer = (keyLetter) => {
 
 const handleEnter = (keyLetter) => {
   gameState.currentTile === 5
-    ? checkAnswer(keyLetter)
+    ? checkAnswer()
     : console.log("sorry please fill in 5 letter word");
 };
 
@@ -163,18 +174,18 @@ const renderGame = () => {
 
 const main = () => {
   /* Start Game Modal */
-  const $modal = $(".modal");
-  const $startBtn = $(".modal_button");
-
-  window.onload = (event) => {
+  const $modal = $(".modal_start");
+  window.onload = () => {
     setTimeout(() => {
       $modal.addClass("modal_visible");
     }, 1000);
   };
 
+  const $startBtn = $(".modal_button_start");
   $startBtn.on("click", () => {
     $modal.removeClass("modal_visible");
   });
 };
 
 renderGame();
+main();
