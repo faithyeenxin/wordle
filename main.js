@@ -69,10 +69,14 @@ const resetGame = () => {
 const gameOver = (message) => {
   console.log("Game over! " + message);
   /* Game Over Modal*/
-  $(".modal_title").text(message);
   const $modal = $(".modal_gameover");
-  $modal.addClass("modal_visible");
-
+  const $messageDisplay = $(".message_container");
+  const $message = $("<p>").text(word);
+  $messageDisplay.append($message);
+  setTimeout(() => {
+    $(".modal_title").text(message);
+    $modal.addClass("modal_visible");
+  }, 1000);
   const $startBtn = $(".modal_button_restart");
   $startBtn.on("click", () => {
     resetGame();
@@ -87,7 +91,7 @@ const showIncorrect = () => {
     gameState.currentRow++;
     gameState.currentTile = 0;
   } else {
-    gameOver("You were wrong!");
+    gameOver("You ran out of tries!");
   }
 };
 
@@ -178,7 +182,7 @@ const main = () => {
   window.onload = () => {
     setTimeout(() => {
       $modal.addClass("modal_visible");
-    }, 1000);
+    }, 800);
   };
 
   const $startBtn = $(".modal_button_start");

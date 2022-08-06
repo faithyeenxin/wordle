@@ -75,8 +75,8 @@ button {
 
 .tile_container {
   width: 330px;
-  margin-top: 30px;
-  margin-bottom: 50px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .key_container {
@@ -118,4 +118,15 @@ button {
 .key_container button:nth-child(20),
 .key_container button:nth-child(28) {
   width: 68px;
+}
+
+.message_container {
+    height: 30px;
+}
+
+.message_container p {
+    background-color: #D3D3D3;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 0;
 }
