@@ -46,6 +46,14 @@ const gameState = {
     ["", "", "", "", ""],
     ["", "", "", "", ""],
   ],
+  gameRowStatus: [
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+  ],
   currentRow: 0,
   currentTile: 0,
 };
@@ -55,6 +63,14 @@ const gameState = {
 //////////////////////////////////////////////////////
 const resetGame = () => {
   gameState.gameRows = [
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+    ["", "", "", "", ""],
+  ];
+  gameState.gameRowStatus = [
     ["", "", "", "", ""],
     ["", "", "", "", ""],
     ["", "", "", "", ""],
@@ -100,17 +116,23 @@ const showCorrect = () => {
   gameOver("You got it!");
 };
 
-const flipTiles = () => {
-  const $rowTiles = $(`#row_${gameState.currentRow}`).children();
-  $rowTiles.each((index, tile) => {
-    console.log(tile);
-    //when i add the class to existing tiles created by jQuery, nothing happens :(
-    $(tile).addClass("yellow");
+const animateTiles = () => {
+  gameState.gameRows[gameState.currentRow].forEach((letter, index) => {
+    console.log(letter, index);
+    console.log(word[index]);
+    if (letter === word[index]) {
+      gameState.gameRowStatus[gameState.currentRow][index] = "green_overlay";
+    } else if (word.includes(letter)) {
+      gameState.gameRowStatus[gameState.currentRow][index] = "yellow_overlay";
+    } else {
+      gameState.gameRowStatus[gameState.currentRow][index] = "grey_overlay";
+    }
   });
+  console.log(gameState.gameRowStatus[gameState.currentRow]);
 };
 
 const checkAnswer = () => {
-  flipTiles();
+  animateTiles();
   gameState.gameRows[gameState.currentRow].join("") === word
     ? showCorrect()
     : showIncorrect();
@@ -161,6 +183,7 @@ const renderTileBoard = () => {
       $tile
         .attr("id", "row_" + rowIndex + "_tile_" + tileIndex)
         .addClass("tile")
+        .addClass(gameState.gameRowStatus[rowIndex][tileIndex])
         .text(tile);
       $row.append($tile);
     });
