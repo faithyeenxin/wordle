@@ -44,14 +44,17 @@ const gameState = {
     ["", "", "", "", ""],
     ["", "", "", "", ""],
   ],
-  gameRowStatus: [
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-  ],
+  color: {
+    letter: "green_overlay",
+  },
+  // gameRowStatus: [
+  //   ["", "", "", "", ""],
+  //   ["", "", "", "", ""],
+  //   ["", "", "", "", ""],
+  //   ["", "", "", "", ""],
+  //   ["", "", "", "", ""],
+  //   ["", "", "", "", ""],
+  // ],
   currentRow: 0,
   currentTile: 0,
 };
@@ -101,52 +104,29 @@ const gameOver = (message) => {
 };
 
 const showIncorrect = () => {
-  if (gameState.currentRow < 5) {
+  gameState.currentRow++;
+  gameState.currentTile = 0;
+  addColor();
+  if (gameState.currentRow <= 5) {
     console.log("sorry please try again");
-    gameState.currentRow++;
-    gameState.currentTile = 0;
+    // gameState.currentRow++;
+    // gameState.currentTile = 0;
   } else {
     gameOver("You ran out of tries!");
   }
 };
 
 const showCorrect = () => {
+  gameState.currentRow++;
+  gameState.currentTile = 0;
+  addColor();
   gameOver("You got it!");
 };
 
-const animateTiles = () => {
-  gameState.gameRows[gameState.currentRow].forEach((letter, index) => {
-    console.log(letter, index);
-    console.log(word[index]);
-    if (letter === word[index]) {
-      gameState.gameRowStatus[gameState.currentRow][index] = "green_overlay";
-    } else if (word.includes(letter)) {
-      gameState.gameRowStatus[gameState.currentRow][index] = "yellow_overlay";
-    } else {
-      gameState.gameRowStatus[gameState.currentRow][index] = "grey_overlay";
-    }
-  });
-  console.log(gameState.gameRowStatus[gameState.currentRow]);
-};
-
-// const animateTiles_2 = (row, tile, tileIndex) => {
-//   console.log(`tile: ${tile}, letter: ${word[tileIndex]}`);
-//   if (tile === undefined || tile === "") {
-//     return "";
-//   } else if (row < gameState.currentRow) {
-//     if (tile === word[tileIndex]) {
-//       return "green_overlay";
-//     } else if (word.includes(tile)) {
-//       return "yellow_overlay";
-//     } else {
-//       return "grey_overlay";
-//     }
-//   } else {
-//     return "";
-//   }
-// };
 const checkAnswer = () => {
-  animateTiles();
+  // gameState.currentRow++;
+  // gameState.currentTile = 0;
+  // addColor();
   gameState.gameRows[gameState.currentRow].join("") === word
     ? showCorrect()
     : showIncorrect();
@@ -183,15 +163,49 @@ const handleClick = (keyLetter) => {
   renderGame();
 };
 
-const addColor = ($key, keyLetter) => {
-  gameState.gameRows.forEach((row, rowIndex) => {
-    row.forEach((tile, tileIndex) => {
-      if (tile === keyLetter) {
-        return $key.addClass(gameState.gameRowStatus[rowIndex][tileIndex]);
-      }
-    });
-  });
+//// when there's 2 states maintained (not recommended)
+// const addColor = () => {
+//   gameState.gameRows[gameState.currentRow].forEach((letter, index) => {
+//     console.log(letter, index);
+//     console.log(word[index]);
+//     if (letter === word[index]) {
+//       gameState.gameRowStatus[gameState.currentRow][index] = "green_overlay";
+//     } else if (word.includes(letter)) {
+//       gameState.gameRowStatus[gameState.currentRow][index] = "yellow_overlay";
+//     } else {
+//       gameState.gameRowStatus[gameState.currentRow][index] = "grey_overlay";
+//     }
+//   });
+//   console.log(gameState.gameRowStatus[gameState.currentRow]);
+// };
+
+const addColor = (rowIndex, tile, tileIndex) => {
+  if (tile === undefined || tile === "") {
+    return "";
+  } else if (rowIndex < gameState.currentRow) {
+    if (tile === word[tileIndex]) {
+      gameState.color[tile] = "green_overlay";
+      return "green_overlay";
+    } else if (word.includes(tile)) {
+      gameState.color[tile] = "yellow_overlay";
+      return "yellow_overlay";
+    } else {
+      gameState.color[tile] = "grey_overlay";
+      return "grey_overlay";
+    }
+  } else {
+    return "";
+  }
 };
+
+const addKeyColor = (keyLetter) => {
+  for (const letter in gameState.color) {
+    if (letter === keyLetter) {
+      return gameState.color[letter];
+    }
+  }
+};
+
 //////////////////////////////////////////////////////
 //// * RENDERING
 //////////////////////////////////////////////////////
@@ -206,8 +220,9 @@ const renderTileBoard = () => {
       $tile
         .attr("id", "row_" + rowIndex + "_tile_" + tileIndex)
         .addClass("tile")
-        .addClass(gameState.gameRowStatus[rowIndex][tileIndex])
-        // .addClass(animateTiles_2(row, tile, tileIndex))
+        //// when there's 2 states maintained (not recommended)
+        // .addClass(gameState.gameRowStatus[rowIndex][tileIndex])
+        .addClass(addColor(rowIndex, tile, tileIndex))
         .text(tile);
       $row.append($tile);
     });
@@ -224,8 +239,8 @@ const renderKeyBoard = () => {
       .attr("id", keyLetter)
       .on("click", () => {
         handleClick(keyLetter);
-      });
-    addColor($key, keyLetter);
+      })
+      .addClass(addKeyColor(keyLetter));
     $keyBoard.append($key);
   });
 };
@@ -233,6 +248,7 @@ const renderKeyBoard = () => {
 const renderGame = () => {
   renderTileBoard();
   renderKeyBoard();
+  console.log(gameState.color);
 };
 
 const main = () => {
@@ -251,4 +267,4 @@ const main = () => {
 };
 
 renderGame();
-main();
+// main();
