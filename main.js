@@ -71,34 +71,34 @@ const resetGame = () => {
     ["", "", "", "", ""],
     ["", "", "", "", ""],
   ];
-  gameState.gameRowStatus = [
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-  ];
+  gameState.color = {};
   gameState.currentRow = 0;
   gameState.currentTile = 0;
 };
 
-const gameOver = (message) => {
-  console.log("Game over! " + message);
-  /* Game Over Modal*/
-  const $modal = $(".modal_gameover");
+const popUp = (title, descrip, buttonMessage) => {
+  console.log("Game over! " + title);
   const $messageDisplay = $(".message_container");
   const $message = $("<p>").text(word);
-  $messageDisplay.append($message);
+  /* Diplay Correct Word */
+  if (buttonMessage === "Replay") {
+    $messageDisplay.append($message);
+  }
+
+  /* Game Over Modal*/
+  const $modal = $(".modal_popup");
   setTimeout(() => {
-    $(".modal_title").text(message);
+    $(".modal_title").text(title);
+    $(".modal_message").text(descrip);
     $modal.addClass("modal_visible");
-  }, 1000);
-  const $startBtn = $(".modal_button_restart");
-  $startBtn.on("click", () => {
+  }, 500);
+  const $Btn = $(".modal_button_restart").text(buttonMessage);
+  $Btn.on("click", () => {
     $message.remove();
-    resetGame();
-    renderGame();
+    if (buttonMessage === "Replay") {
+      resetGame();
+      renderGame();
+    }
     $modal.removeClass("modal_visible");
   });
 };
@@ -109,10 +109,8 @@ const showIncorrect = () => {
   addColor();
   if (gameState.currentRow <= 5) {
     console.log("sorry please try again");
-    // gameState.currentRow++;
-    // gameState.currentTile = 0;
   } else {
-    gameOver("You ran out of tries!");
+    popUp("You ran out of tries!", "Would you like to play again?", "Replay");
   }
 };
 
@@ -120,13 +118,10 @@ const showCorrect = () => {
   gameState.currentRow++;
   gameState.currentTile = 0;
   addColor();
-  gameOver("You got it!");
+  popUp("You got it!", "Would you like to play again?", "Replay");
 };
 
 const checkAnswer = () => {
-  // gameState.currentRow++;
-  // gameState.currentTile = 0;
-  // addColor();
   gameState.gameRows[gameState.currentRow].join("") === word
     ? showCorrect()
     : showIncorrect();
@@ -135,21 +130,25 @@ const checkAnswer = () => {
 const handleEnter = (keyLetter) => {
   gameState.currentTile === 5
     ? checkAnswer()
-    : console.log("sorry please fill in 5 letter word");
+    : popUp("Oh No!", "Please fill up a 5 letter word!", "Continue");
 };
 
 const handleBackspace = (keyLetter) => {
   gameState.currentTile > 0
     ? gameState.currentTile-- &&
       (gameState.gameRows[gameState.currentRow][gameState.currentTile] = "")
-    : console.log("sorry there is nothing to remove");
+    : popUp("Oh No!", "There's nothing to remove!", "Continue");
 };
 
 const addInput = (keyLetter) => {
   gameState.currentTile < 5 && gameState.currentRow < 6
     ? (gameState.gameRows[gameState.currentRow][gameState.currentTile] =
         keyLetter) && gameState.currentTile++
-    : console.log("sorry you can only submit");
+    : popUp(
+        "You can't add more letters!",
+        "Please click the Enter Button to submit!",
+        "Continue"
+      );
 };
 
 const handleClick = (keyLetter) => {
@@ -162,22 +161,6 @@ const handleClick = (keyLetter) => {
   }
   renderGame();
 };
-
-//// when there's 2 states maintained (not recommended)
-// const addColor = () => {
-//   gameState.gameRows[gameState.currentRow].forEach((letter, index) => {
-//     console.log(letter, index);
-//     console.log(word[index]);
-//     if (letter === word[index]) {
-//       gameState.gameRowStatus[gameState.currentRow][index] = "green_overlay";
-//     } else if (word.includes(letter)) {
-//       gameState.gameRowStatus[gameState.currentRow][index] = "yellow_overlay";
-//     } else {
-//       gameState.gameRowStatus[gameState.currentRow][index] = "grey_overlay";
-//     }
-//   });
-//   console.log(gameState.gameRowStatus[gameState.currentRow]);
-// };
 
 const addColor = (rowIndex, tile, tileIndex) => {
   if (tile === undefined || tile === "") {
@@ -220,8 +203,6 @@ const renderTileBoard = () => {
       $tile
         .attr("id", "row_" + rowIndex + "_tile_" + tileIndex)
         .addClass("tile")
-        //// when there's 2 states maintained (not recommended)
-        // .addClass(gameState.gameRowStatus[rowIndex][tileIndex])
         .addClass(addColor(rowIndex, tile, tileIndex))
         .text(tile);
       $row.append($tile);
@@ -248,7 +229,6 @@ const renderKeyBoard = () => {
 const renderGame = () => {
   renderTileBoard();
   renderKeyBoard();
-  console.log(gameState.color);
 };
 
 const main = () => {
