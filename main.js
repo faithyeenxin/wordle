@@ -1,7 +1,5 @@
 import $ from "jquery";
 
-console.log($);
-
 //////////////////////////////////////////////////////
 //// * DATA
 //////////////////////////////////////////////////////
@@ -97,7 +95,7 @@ const gameOver = (message) => {
   $startBtn.on("click", () => {
     $message.remove();
     resetGame();
-    renderTileBoard();
+    renderGame();
     $modal.removeClass("modal_visible");
   });
 };
@@ -131,6 +129,22 @@ const animateTiles = () => {
   console.log(gameState.gameRowStatus[gameState.currentRow]);
 };
 
+// const animateTiles_2 = (row, tile, tileIndex) => {
+//   console.log(`tile: ${tile}, letter: ${word[tileIndex]}`);
+//   if (tile === undefined || tile === "") {
+//     return "";
+//   } else if (row < gameState.currentRow) {
+//     if (tile === word[tileIndex]) {
+//       return "green_overlay";
+//     } else if (word.includes(tile)) {
+//       return "yellow_overlay";
+//     } else {
+//       return "grey_overlay";
+//     }
+//   } else {
+//     return "";
+//   }
+// };
 const checkAnswer = () => {
   animateTiles();
   gameState.gameRows[gameState.currentRow].join("") === word
@@ -166,9 +180,18 @@ const handleClick = (keyLetter) => {
   } else {
     addInput(keyLetter);
   }
-  renderTileBoard();
+  renderGame();
 };
 
+const addColor = ($key, keyLetter) => {
+  gameState.gameRows.forEach((row, rowIndex) => {
+    row.forEach((tile, tileIndex) => {
+      if (tile === keyLetter) {
+        return $key.addClass(gameState.gameRowStatus[rowIndex][tileIndex]);
+      }
+    });
+  });
+};
 //////////////////////////////////////////////////////
 //// * RENDERING
 //////////////////////////////////////////////////////
@@ -184,6 +207,7 @@ const renderTileBoard = () => {
         .attr("id", "row_" + rowIndex + "_tile_" + tileIndex)
         .addClass("tile")
         .addClass(gameState.gameRowStatus[rowIndex][tileIndex])
+        // .addClass(animateTiles_2(row, tile, tileIndex))
         .text(tile);
       $row.append($tile);
     });
@@ -192,7 +216,7 @@ const renderTileBoard = () => {
 };
 
 const renderKeyBoard = () => {
-  const $keyBoard = $(".key_container");
+  const $keyBoard = $(".key_container").empty();
   gameState.keys.forEach((keyLetter) => {
     const $key = $("<button>");
     $key
@@ -201,6 +225,7 @@ const renderKeyBoard = () => {
       .on("click", () => {
         handleClick(keyLetter);
       });
+    addColor($key, keyLetter);
     $keyBoard.append($key);
   });
 };
