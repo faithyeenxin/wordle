@@ -3,7 +3,33 @@ import $ from "jquery";
 //////////////////////////////////////////////////////
 //// * DATA
 //////////////////////////////////////////////////////
-const word = "PANDA";
+const listOfWords = [
+  "panda",
+  "usual",
+  "actor",
+  "daddy",
+  "haunt",
+  "lover",
+  "claim",
+  "media",
+  "toady",
+  "build",
+  "guest",
+  "straw",
+  "banal",
+  "legal",
+  "exert",
+  "chest",
+  "earth",
+  "reply",
+  "front",
+  "trust",
+];
+
+let word =
+  listOfWords[Math.floor(Math.random() * listOfWords.length)].toUpperCase();
+
+console.log(word);
 
 const gameState = {
   keys: [
@@ -47,14 +73,6 @@ const gameState = {
   color: {
     letter: "green_overlay",
   },
-  // gameRowStatus: [
-  //   ["", "", "", "", ""],
-  //   ["", "", "", "", ""],
-  //   ["", "", "", "", ""],
-  //   ["", "", "", "", ""],
-  //   ["", "", "", "", ""],
-  //   ["", "", "", "", ""],
-  // ],
   currentRow: 0,
   currentTile: 0,
 };
@@ -77,7 +95,6 @@ const resetGame = () => {
 };
 
 const popUp = (title, descrip, buttonMessage) => {
-  console.log("Game over! " + title);
   const $messageDisplay = $(".message_container");
   const $message = $("<p>").text(word);
   /* Diplay Correct Word */
@@ -108,7 +125,7 @@ const showIncorrect = () => {
   gameState.currentTile = 0;
   addColor();
   if (gameState.currentRow <= 5) {
-    console.log("sorry please try again");
+    popUp("Oh No!", "You got it wrong!", "Try Again");
   } else {
     popUp("You ran out of tries!", "Would you like to play again?", "Replay");
   }
@@ -206,8 +223,8 @@ const renderTileBoard = () => {
         .addClass(addColor(rowIndex, tile, tileIndex))
         .text(tile);
       $row.append($tile);
+      $tileBoard.append($row);
     });
-    $tileBoard.append($row);
   });
 };
 
@@ -232,6 +249,7 @@ const renderGame = () => {
 };
 
 const main = () => {
+  renderGame();
   /* Start Game Modal */
   const $modal = $(".modal_start");
   window.onload = () => {
@@ -246,5 +264,4 @@ const main = () => {
   });
 };
 
-renderGame();
-// main();
+main();
