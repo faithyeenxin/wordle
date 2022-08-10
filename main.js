@@ -16,7 +16,7 @@ const listOfWords = [
   "build",
   "guest",
   "straw",
-  "banal",
+  "canal",
   "legal",
   "exert",
   "chest",
@@ -26,12 +26,10 @@ const listOfWords = [
   "trust",
 ];
 
-let word =
-  listOfWords[Math.floor(Math.random() * listOfWords.length)].toUpperCase();
-
-console.log(word);
-
 const gameState = {
+  word: listOfWords[
+    Math.floor(Math.random() * listOfWords.length)
+  ].toUpperCase(),
   keys: [
     "Q",
     "W",
@@ -92,11 +90,15 @@ const resetGame = () => {
   gameState.color = {};
   gameState.currentRow = 0;
   gameState.currentTile = 0;
+  gameState.word =
+    listOfWords[Math.floor(Math.random() * listOfWords.length)].toUpperCase();
+  console.log(gameState.word);
 };
 
 const popUp = (title, descrip, buttonMessage) => {
+  console.log("button message was: " + buttonMessage);
   const $messageDisplay = $(".message_container");
-  const $message = $("<p>").text(word);
+  const $message = $("<p>").text(gameState.word);
   /* Diplay Correct Word */
   if (buttonMessage === "Replay") {
     $messageDisplay.append($message);
@@ -108,16 +110,19 @@ const popUp = (title, descrip, buttonMessage) => {
     $(".modal_title").text(title);
     $(".modal_message").text(descrip);
     $modal.addClass("modal_visible");
+    $(".modal_button_restart")
+      .off()
+      .text(buttonMessage)
+      .on("click", () => {
+        console.log("button clicked was: " + buttonMessage);
+        $message.remove();
+        if (buttonMessage === "Replay") {
+          resetGame();
+          renderGame();
+        }
+        $modal.removeClass("modal_visible");
+      });
   }, 500);
-  const $Btn = $(".modal_button_restart").text(buttonMessage);
-  $Btn.on("click", () => {
-    $message.remove();
-    if (buttonMessage === "Replay") {
-      resetGame();
-      renderGame();
-    }
-    $modal.removeClass("modal_visible");
-  });
 };
 
 const showIncorrect = () => {
@@ -125,8 +130,10 @@ const showIncorrect = () => {
   gameState.currentTile = 0;
   addColor();
   if (gameState.currentRow <= 5) {
+    console.log("try again was entered");
     popUp("Oh No!", "You got it wrong!", "Try Again");
   } else {
+    console.log("replay was entered cos ran out of tries");
     popUp("You ran out of tries!", "Would you like to play again?", "Replay");
   }
 };
@@ -135,11 +142,12 @@ const showCorrect = () => {
   gameState.currentRow++;
   gameState.currentTile = 0;
   addColor();
+  console.log("replay was entered cos show correct");
   popUp("You got it!", "Would you like to play again?", "Replay");
 };
 
 const checkAnswer = () => {
-  gameState.gameRows[gameState.currentRow].join("") === word
+  gameState.gameRows[gameState.currentRow].join("") === gameState.word
     ? showCorrect()
     : showIncorrect();
 };
@@ -183,10 +191,10 @@ const addColor = (rowIndex, tile, tileIndex) => {
   if (tile === undefined || tile === "") {
     return "";
   } else if (rowIndex < gameState.currentRow) {
-    if (tile === word[tileIndex]) {
+    if (tile === gameState.word[tileIndex]) {
       gameState.color[tile] = "green_overlay";
       return "green_overlay";
-    } else if (word.includes(tile)) {
+    } else if (gameState.word.includes(tile)) {
       gameState.color[tile] = "yellow_overlay";
       return "yellow_overlay";
     } else {
@@ -250,6 +258,7 @@ const renderGame = () => {
 
 const main = () => {
   renderGame();
+  console.log(gameState.word);
   /* Start Game Modal */
   const $modal = $(".modal_start");
   window.onload = () => {
