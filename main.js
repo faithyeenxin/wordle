@@ -212,7 +212,8 @@ const popUp = (title, descrip, buttonMessage) => {
       .on("click", () => {
         $message.remove();
         if (buttonMessage === "Replay") {
-          myAPI(resetGame); //ONLY SWITCH ON THIS LINE OF CODE WHEN NOT TESTING
+          // myAPI(resetGame); //ONLY SWITCH ON THIS LINE OF CODE WHEN NOT TESTING
+          resetGame();
         }
         $modal.removeClass("modal_visible");
       });
@@ -437,14 +438,18 @@ const main = () => {
     $scoreModal.removeClass("modal_visible");
   });
 
-  const $resetHighScoreBtn = $(".modal_button_reset.score");
-  $resetHighScoreBtn.off();
-  $resetHighScoreBtn.on("click", () => {
+  const $resetScoreBtn = $(".modal_button_reset.score");
+  $resetScoreBtn.off();
+  $resetScoreBtn.on("click", () => {
+    localStorage.removeItem(gameState.playerName);
     localStorage.setItem(
       gameState.playerName,
       JSON.stringify({ name: gameState.playerName, score: 0 })
     );
-    $highScore.text(JSON.parse(localStorage.getItem(gameState.name)).score);
+    gameState.score = 0;
+    $highScore.text(0);
+    $currentScore.text(0);
+    console.log(localStorage);
   });
 };
 
