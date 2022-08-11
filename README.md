@@ -58,3 +58,8 @@ Feedback is given through colours:
 
 11. Local storage have been utilized to keep track of user's highscore (based on username entered). Scores can be reset by clicking the reset button.
     ![](https://github.com/faithyeenxin/wordle/blob/main/gifs/scores.gif)
+
+## Tech Stack Utilized
+
+- HTML & CSS
+- Javascript (jQuery + API)
