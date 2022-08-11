@@ -3,33 +3,60 @@ import $ from "jquery";
 //////////////////////////////////////////////////////
 //// * DATA
 //////////////////////////////////////////////////////
-const listOfWords = [
-  "panda",
-  "usual",
-  "actor",
-  "daddy",
-  "haunt",
-  "lover",
-  "claim",
-  "media",
-  "toady",
-  "build",
-  "guest",
-  "straw",
-  "canal",
-  "legal",
-  "exert",
-  "chest",
-  "earth",
-  "reply",
-  "front",
-  "trust",
-];
+
+let apiWords = [""];
+const myAPI = (callback) => {
+  const settings = {
+    async: true,
+    crossDomain: true,
+    url: "https://random-words5.p.rapidapi.com/getMultipleRandom?count=5&wordLength=5",
+    method: "GET",
+    headers: {
+      "X-RapidAPI-Key": "47a48209d9mshd1a13fcd7d48010p1847d4jsn5ed0867d44a8",
+      "X-RapidAPI-Host": "random-words5.p.rapidapi.com",
+    },
+  };
+
+  $.ajax(settings).then(
+    (response) => {
+      // console.log(response);
+      // console.log(Array.isArray(response));
+      apiWords = response;
+      if (typeof callback === "function") {
+        callback();
+      }
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+
+// const listOfWords = [
+//   "panda",
+//   "usual",
+//   "actor",
+//   "daddy",
+//   "haunt",
+//   "lover",
+//   "claim",
+//   "media",
+//   "toady",
+//   "build",
+//   "guest",
+//   "straw",
+//   "canal",
+//   "legal",
+//   "exert",
+//   "chest",
+//   "earth",
+//   "reply",
+//   "front",
+//   "trust",
+// ];
 
 const gameState = {
-  word: listOfWords[
-    Math.floor(Math.random() * listOfWords.length)
-  ].toUpperCase(),
+  word: "",
   keys: [
     "Q",
     "W",
@@ -78,6 +105,7 @@ const gameState = {
 //////////////////////////////////////////////////////
 //// * FUNCTIONS
 //////////////////////////////////////////////////////
+
 const resetGame = () => {
   gameState.gameRows = [
     ["", "", "", "", ""],
@@ -90,9 +118,11 @@ const resetGame = () => {
   gameState.color = {};
   gameState.currentRow = 0;
   gameState.currentTile = 0;
+  console.log(apiWords);
   gameState.word =
-    listOfWords[Math.floor(Math.random() * listOfWords.length)].toUpperCase();
+    apiWords[Math.floor(Math.random() * apiWords.length)].toUpperCase();
   console.log(gameState.word);
+  renderGame();
 };
 
 const popUp = (title, descrip, buttonMessage) => {
@@ -117,8 +147,7 @@ const popUp = (title, descrip, buttonMessage) => {
         console.log("button clicked was: " + buttonMessage);
         $message.remove();
         if (buttonMessage === "Replay") {
-          resetGame();
-          renderGame();
+          myAPI(resetGame);
         }
         $modal.removeClass("modal_visible");
       });
@@ -257,7 +286,7 @@ const renderGame = () => {
 };
 
 const main = () => {
-  renderGame();
+  myAPI();
   console.log(gameState.word);
   /* Start Game Modal */
   const $modal = $(".modal_start");
@@ -269,7 +298,18 @@ const main = () => {
 
   const $startBtn = $(".modal_button_start");
   $startBtn.on("click", () => {
-    $modal.removeClass("modal_visible");
+    if (apiWords.length > 0) {
+      console.log("apiWords have been generated.");
+      console.log(apiWords);
+      console.log("gameState word has been assigned.");
+      gameState.word =
+        apiWords[Math.floor(Math.random() * apiWords.length)].toUpperCase();
+      console.log("the word is:" + gameState.word);
+      $modal.removeClass("modal_visible");
+      renderGame();
+    } else {
+      alert("sorry please wait");
+    }
   });
 };
 
