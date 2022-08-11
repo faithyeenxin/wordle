@@ -1,6 +1,6 @@
 # Developing a Wordle Game from scratch!
 
-![](https://github.com/faithyeenxin/wordle/blob/main/gifs/wordle_game_start.gif)
+![](https://github.com/faithyeenxin/wordle/blob/main/gifs/wordle_start_up.gif)
 
 ## Game Description
 
