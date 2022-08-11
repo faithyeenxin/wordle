@@ -385,6 +385,11 @@ const main = () => {
   $closeScoreBtn.on("click", () => {
     $scoreModal.removeClass("modal_visible");
   });
+
+  const $resetHighScoreBtn = $(".modal_button_reset.score");
+  $resetHighScoreBtn.on("click", () => {
+    localStorage.setItem("highscore", "0");
+  });
 };
 
 main();
