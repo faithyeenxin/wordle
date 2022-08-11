@@ -38,6 +38,14 @@ img:hover{
   font-size: 15px;
 }
 
+.startButtonInstruction{
+  font-size: 10px;
+  line-height: none;
+  border-top: none;
+  padding: 10px 0px 0px 0px;
+  text-align: center;
+}
+
 input{
   font-family: 'Silkscreen', cursive;
   text-align: center;
