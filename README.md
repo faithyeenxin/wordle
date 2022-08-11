@@ -35,7 +35,7 @@ Feedback is given through colours:
 
 - If a player tries to submit a word less than 5 letters an error modal would show to instruct him to do otherwise.
 - If a player continues to type when he has already selected 5 letters he would also receive an error modal telling him to select the “Enter” key.
-  ![](https://github.com/faithyeenxin/wordle/blob/main/gifs/submit_five_only.gif)
+  ![](https://github.com/faithyeenxin/wordle/blob/main/gifs/submit_5_only.gif)
 
 6. When “Enter” is clicked:
 
