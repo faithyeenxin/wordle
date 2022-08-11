@@ -129,6 +129,7 @@ const gameState = {
   },
   currentRow: 0,
   currentTile: 0,
+  score: 0,
 };
 
 //////////////////////////////////////////////////////
@@ -173,7 +174,8 @@ const popUp = (title, descrip, buttonMessage) => {
       .on("click", () => {
         $message.remove();
         if (buttonMessage === "Replay") {
-          myAPI(resetGame);
+          // myAPI(resetGame); //ONLY SWITCH ON THIS LINE OF CODE WHEN NOT TESTING
+          resetGame();
         }
         $modal.removeClass("modal_visible");
       });
@@ -194,6 +196,8 @@ const showIncorrect = () => {
 const showCorrect = () => {
   gameState.currentRow++;
   gameState.currentTile = 0;
+  gameState.score++;
+  storeScore();
   addColor();
   popUp("You got it!", "Would you like to play again?", "Replay");
 };
@@ -367,4 +371,21 @@ const main = () => {
 };
 
 main();
-// checkIfWordExist("kkkk");
+
+// localStorage.setItem("highscore", "100");
+// console.log(localStorage);
+// localStorage.removeItem("highscore");
+// console.log(localStorage);
+
+const storeScore = () => {
+  if (localStorage.getItem("highscore") < gameState.score) {
+    localStorage.setItem("highscore", gameState.score);
+    const highScore = localStorage.getItem("highscore");
+    console.log("Your highscore is " + highScore);
+    console.log("Your current score is " + gameState.score);
+  } else {
+    const highScore = localStorage.getItem("highscore");
+    console.log("Your highscore is " + highScore);
+    console.log("Your current score is " + gameState.score);
+  }
+};
