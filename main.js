@@ -149,6 +149,7 @@ const resetGame = () => {
   gameState.currentTile = 0;
   gameState.word =
     apiWords[Math.floor(Math.random() * apiWords.length)].toUpperCase();
+  console.log("the word is: " + gameState.word);
   renderGame();
 };
 
@@ -163,8 +164,8 @@ const popUp = (title, descrip, buttonMessage) => {
   /* Game Over Modal*/
   const $modal = $(".modal_popup");
   setTimeout(() => {
-    $(".modal_title").text(title);
-    $(".modal_message").text(descrip);
+    $(".modal_title.popup").text(title);
+    $(".modal_message.popup").text(descrip);
     $modal.addClass("modal_visible");
     $(".modal_button_restart")
       .off()
@@ -306,6 +307,10 @@ const renderKeyBoard = () => {
   });
 };
 
+const renderGuide = () => {};
+
+const renderScore = () => {};
+
 const renderGame = () => {
   renderTileBoard();
   renderKeyBoard();
@@ -326,7 +331,7 @@ const main = () => {
     if (apiWords.length > 0) {
       gameState.word =
         apiWords[Math.floor(Math.random() * apiWords.length)].toUpperCase();
-      console.log("the word is:" + gameState.word);
+      console.log("the word is: " + gameState.word);
       $modal.removeClass("modal_visible");
       renderGame();
     } else {
@@ -336,6 +341,24 @@ const main = () => {
         "Dismiss"
       );
     }
+  });
+
+  const $guideModal = $(".modal_guide");
+  const $guideBtn = $(".guide");
+  $guideBtn.on("click", () => {
+    console.log("guide has been clicked");
+    $guideModal.addClass("modal_visible");
+  });
+
+  const $closeBtn = $(".modal_button_close");
+  $closeBtn.on("click", () => {
+    $guideModal.removeClass("modal_visible");
+  });
+
+  const $scoreBtn = $(".score");
+  $scoreBtn.on("click", () => {
+    console.log("score has been clicked");
+    renderScore();
   });
 };
 

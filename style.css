@@ -7,6 +7,20 @@ standard border radius: 0.7rem;
     "Lucida Sans", Arial, sans-serif;
 }
 
+img{
+  /* padding: 20px; */
+  margin: 20px;
+  width: 40px;
+  height:40px;
+  cursor: pointer;
+}
+
+
+img:hover{
+  background-color: #e6d7ff;
+  border-radius: 20%;
+}
+
 .modal{
   width: 100%;
   height: 100%;
@@ -70,7 +84,11 @@ button {
 
 .title_container {
   text-align: center;
-  width: 510px;
+  width: 60vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
 }
 
 .tile_container {
