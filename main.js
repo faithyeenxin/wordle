@@ -154,6 +154,19 @@ const resetGame = () => {
   renderGame();
 };
 
+const storeScore = () => {
+  if (localStorage.getItem("highscore") < gameState.score) {
+    localStorage.setItem("highscore", gameState.score);
+    const highScore = localStorage.getItem("highscore");
+    console.log("Your highscore is " + highScore);
+    console.log("Your current score is " + gameState.score);
+  } else {
+    const highScore = localStorage.getItem("highscore");
+    console.log("Your highscore is " + highScore);
+    console.log("Your current score is " + gameState.score);
+  }
+};
+
 const popUp = (title, descrip, buttonMessage) => {
   const $messageDisplay = $(".message_container");
   const $message = $("<p>").text(gameState.word);
@@ -360,8 +373,12 @@ const main = () => {
 
   const $scoreBtn = $(".scorebtn");
   const $scoreModal = $(".modal_score");
+  const $highScore = $(".highScore");
+  const $currentScore = $(".currentScore");
   $scoreBtn.on("click", () => {
     console.log("score has been clicked");
+    $highScore.text(localStorage.getItem("highscore"));
+    $currentScore.text(gameState.score);
     $scoreModal.addClass("modal_visible");
   });
   const $closeScoreBtn = $(".modal_button_close.score");
@@ -376,16 +393,3 @@ main();
 // console.log(localStorage);
 // localStorage.removeItem("highscore");
 // console.log(localStorage);
-
-const storeScore = () => {
-  if (localStorage.getItem("highscore") < gameState.score) {
-    localStorage.setItem("highscore", gameState.score);
-    const highScore = localStorage.getItem("highscore");
-    console.log("Your highscore is " + highScore);
-    console.log("Your current score is " + gameState.score);
-  } else {
-    const highScore = localStorage.getItem("highscore");
-    console.log("Your highscore is " + highScore);
-    console.log("Your current score is " + gameState.score);
-  }
-};
