@@ -343,22 +343,26 @@ const main = () => {
     }
   });
 
+  const $guideBtn = $(".guidebtn");
   const $guideModal = $(".modal_guide");
-  const $guideBtn = $(".guide");
   $guideBtn.on("click", () => {
-    console.log("guide has been clicked");
     $guideModal.addClass("modal_visible");
   });
 
-  const $closeBtn = $(".modal_button_close");
-  $closeBtn.on("click", () => {
+  const $closePopupBtn = $(".modal_button_close.guide");
+  $closePopupBtn.on("click", () => {
     $guideModal.removeClass("modal_visible");
   });
 
-  const $scoreBtn = $(".score");
+  const $scoreBtn = $(".scorebtn");
+  const $scoreModal = $(".modal_score");
   $scoreBtn.on("click", () => {
     console.log("score has been clicked");
-    renderScore();
+    $scoreModal.addClass("modal_visible");
+  });
+  const $closeScoreBtn = $(".modal_button_close.score");
+  $closeScoreBtn.on("click", () => {
+    $scoreModal.removeClass("modal_visible");
   });
 };
 
