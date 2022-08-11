@@ -2,6 +2,8 @@
 
 ![](https://github.com/faithyeenxin/wordle/blob/main/gifs/wordle_start_up.gif)
 
+Play my Wordle game here!: https://wordle-mu-flax.vercel.app/
+
 ## Game Description
 
 Wordle is a word game in which the player has to guess a five-letter word in six attempts.
