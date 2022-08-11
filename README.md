@@ -1,6 +1,6 @@
 # Developing a Wordle Game from scratch!
 
-![](https://github.com/Your_Repository_Name/Your_GIF_Name.gif)
+![](https://github.com/faithyeenxin/wordle/blob/main/gifs/wordle_game_start.gif)
 
 ## Game Description
 
