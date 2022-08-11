@@ -10,6 +10,7 @@ Each time the player makes a guess, they are told which of their chosen letters 
 ## Rules of Wordle
 
 The player has to guess a five-letter word in six attempts or less.
+
 The word entered should exist in the dictionary.
 
 Each time the player makes a guess, they are told which of their chosen letters are in the target word.
