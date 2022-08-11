@@ -1,7 +1,7 @@
 import $ from "jquery";
 
 //////////////////////////////////////////////////////
-//// * DATA
+//// * APIs
 //////////////////////////////////////////////////////
 
 let apiWords = [""];
@@ -61,28 +61,9 @@ const checkIfWordExist = (word, callback) => {
   );
 };
 
-// const listOfWords = [
-//   "panda",
-//   "usual",
-//   "actor",
-//   "daddy",
-//   "haunt",
-//   "lover",
-//   "claim",
-//   "media",
-//   "toady",
-//   "build",
-//   "guest",
-//   "straw",
-//   "canal",
-//   "legal",
-//   "exert",
-//   "chest",
-//   "earth",
-//   "reply",
-//   "front",
-//   "trust",
-// ];
+//////////////////////////////////////////////////////
+//// * STATE
+//////////////////////////////////////////////////////
 
 const gameState = {
   word: "",
@@ -366,6 +347,7 @@ const main = () => {
   console.log(localStorage);
   gameState.playerName = "";
   myAPI();
+
   /* Start Game Modal */
   const $modal = $(".modal_start");
   window.onload = () => {
@@ -382,11 +364,9 @@ const main = () => {
         apiWords[Math.floor(Math.random() * apiWords.length)].toUpperCase();
       console.log("the start word is: " + gameState.word);
       $modal.removeClass("modal_visible");
-      //standardize player name entered + store it as state
 
       const playerName = $(".inputName").val();
       savePlayerName(playerName);
-      //check if player exists in local storage, if not > create user
       checkUserExist();
       renderGame();
       console.log(localStorage);

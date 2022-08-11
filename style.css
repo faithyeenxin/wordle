@@ -3,8 +3,14 @@ standard border radius: 0.7rem;
 
 */
 * {
+  
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
+
+}
+
+body{
+  background-image: url('/images/abstract.jpg');
 }
 
 img{
@@ -17,8 +23,10 @@ img{
 
 
 img:hover{
-  background-color: #e6d7ff;
+  /* background-color: #e6d7ff; */
+  background-color: #e7d1ff;
   border-radius: 20%;
+  box-shadow: 1px 1px 40px 2px #d2afff;
 }
 
 .inputForm{
@@ -26,9 +34,14 @@ img:hover{
   padding: 0 0 2rem 0;
 }
 
+.nameInstruction{
+  font-size: 15px;
+}
+
 input{
   font-family: 'Silkscreen', cursive;
-  font-size: 30px;
+  text-align: center;
+  font-size: 25px;
   width:70%;
   height: 30px;
   border-radius: 20px;
@@ -123,6 +136,7 @@ button {
 }
 
 .tile_container .tile {
+  background-color: rgba(254, 254, 254, 0.7);
   width: 62px;
   height: 62px;
   border: 2px solid#D3D3D3;
