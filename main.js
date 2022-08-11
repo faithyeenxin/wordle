@@ -127,6 +127,7 @@ const gameState = {
   color: {
     letter: "green_overlay",
   },
+  playerName: "",
   currentRow: 0,
   currentTile: 0,
   score: 0,
@@ -155,15 +156,39 @@ const resetGame = () => {
 };
 
 const storeScore = () => {
-  if (localStorage.getItem("highscore") < gameState.score) {
-    localStorage.setItem("highscore", gameState.score);
-    const highScore = localStorage.getItem("highscore");
+  const userHighScore = JSON.parse(
+    localStorage.getItem(gameState.playerName)
+  ).score;
+  if (userHighScore < gameState.score) {
+    localStorage.setItem(
+      gameState.playerName,
+      JSON.stringify({ name: gameState.playerName, score: gameState.score })
+    );
+    const highScore = JSON.parse(
+      localStorage.getItem(gameState.playerName)
+    ).score;
     console.log("Your highscore is " + highScore);
     console.log("Your current score is " + gameState.score);
   } else {
-    const highScore = localStorage.getItem("highscore");
+    const highScore = JSON.parse(
+      localStorage.getItem(gameState.playerName)
+    ).score;
     console.log("Your highscore is " + highScore);
     console.log("Your current score is " + gameState.score);
+  }
+};
+
+const checkUserExist = () => {
+  const storedUser = localStorage.getItem(gameState.playerName);
+
+  if (storedUser === null) {
+    console.log("user does not exist and has been created");
+    localStorage.setItem(
+      gameState.playerName,
+      JSON.stringify({ name: gameState.playerName, score: gameState.score })
+    );
+  } else {
+    console.log("the user exists: " + storedUser);
   }
 };
 
@@ -187,8 +212,7 @@ const popUp = (title, descrip, buttonMessage) => {
       .on("click", () => {
         $message.remove();
         if (buttonMessage === "Replay") {
-          // myAPI(resetGame); //ONLY SWITCH ON THIS LINE OF CODE WHEN NOT TESTING
-          resetGame();
+          myAPI(resetGame); //ONLY SWITCH ON THIS LINE OF CODE WHEN NOT TESTING
         }
         $modal.removeClass("modal_visible");
       });
@@ -287,6 +311,14 @@ const addKeyColor = (keyLetter) => {
   }
 };
 
+const savePlayerName = (playerName) => {
+  //figure out why local storage is saving this entire code lol
+  const lowerCasePlayerName = playerName.toLowerCase();
+  const reformattedPlayerName =
+    lowerCasePlayerName.charAt(0).toUpperCase() + lowerCasePlayerName.slice(1);
+  gameState.playerName = reformattedPlayerName;
+};
+
 //////////////////////////////////////////////////////
 //// * RENDERING
 //////////////////////////////////////////////////////
@@ -324,16 +356,14 @@ const renderKeyBoard = () => {
   });
 };
 
-const renderGuide = () => {};
-
-const renderScore = () => {};
-
 const renderGame = () => {
   renderTileBoard();
   renderKeyBoard();
 };
 
 const main = () => {
+  console.log(localStorage);
+  gameState.playerName = "";
   myAPI();
   /* Start Game Modal */
   const $modal = $(".modal_start");
@@ -344,13 +374,21 @@ const main = () => {
   };
 
   const $startBtn = $(".modal_button_start");
+  $startBtn.off();
   $startBtn.on("click", () => {
     if (apiWords.length > 0) {
       gameState.word =
         apiWords[Math.floor(Math.random() * apiWords.length)].toUpperCase();
-      console.log("the word is: " + gameState.word);
+      console.log("the start word is: " + gameState.word);
       $modal.removeClass("modal_visible");
+      //standardize player name entered + store it as state
+
+      const playerName = $(".inputName").val();
+      savePlayerName(playerName);
+      //check if player exists in local storage, if not > create user
+      checkUserExist();
       renderGame();
+      console.log(localStorage);
     } else {
       popUp(
         "Please hold!",
@@ -360,41 +398,54 @@ const main = () => {
     }
   });
 
-  const $guideBtn = $(".guidebtn");
+  /* Guide Modal */
   const $guideModal = $(".modal_guide");
+  const $guideBtn = $(".guidebtn");
+  $guideBtn.off();
   $guideBtn.on("click", () => {
     $guideModal.addClass("modal_visible");
   });
 
   const $closePopupBtn = $(".modal_button_close.guide");
+  $closePopupBtn.off();
   $closePopupBtn.on("click", () => {
     $guideModal.removeClass("modal_visible");
   });
 
-  const $scoreBtn = $(".scorebtn");
+  /* Score Modal */
   const $scoreModal = $(".modal_score");
   const $highScore = $(".highScore");
   const $currentScore = $(".currentScore");
+  const $scoreTitle = $(".modal_title.score");
+  const $scoreBtn = $(".scorebtn");
+  $scoreBtn.off();
   $scoreBtn.on("click", () => {
-    console.log("score has been clicked");
-    $highScore.text(localStorage.getItem("highscore"));
+    $scoreTitle.text(
+      "Hello there " +
+        JSON.parse(localStorage.getItem(gameState.playerName)).name +
+        "!"
+    );
+    $highScore.text(
+      JSON.parse(localStorage.getItem(gameState.playerName)).score
+    );
     $currentScore.text(gameState.score);
     $scoreModal.addClass("modal_visible");
   });
   const $closeScoreBtn = $(".modal_button_close.score");
+  $closeScoreBtn.off();
   $closeScoreBtn.on("click", () => {
     $scoreModal.removeClass("modal_visible");
   });
 
   const $resetHighScoreBtn = $(".modal_button_reset.score");
+  $resetHighScoreBtn.off();
   $resetHighScoreBtn.on("click", () => {
-    localStorage.setItem("highscore", "0");
+    localStorage.setItem(
+      gameState.playerName,
+      JSON.stringify({ name: gameState.playerName, score: 0 })
+    );
+    $highScore.text(JSON.parse(localStorage.getItem(gameState.name)).score);
   });
 };
 
 main();
-
-// localStorage.setItem("highscore", "100");
-// console.log(localStorage);
-// localStorage.removeItem("highscore");
-// console.log(localStorage);

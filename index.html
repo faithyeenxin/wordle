@@ -5,6 +5,9 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@700&display=swap" rel="stylesheet">
   <script type="module" src="/main.js"></script>
   <link rel="stylesheet" href="/style.css" />
   <title>Wordle Game!🐛</title>
@@ -20,6 +23,10 @@
         given for each guess in the form of colored tiles indicating when
         letters match (green) or occupy the correct position (orange)!
       </p>
+      <form class="inputForm">
+        <h2>Enter your name to begin!</h2>
+        <input class="inputName" type="text"/>
+      </form>
       <div class="modal_buttons">
         <button class="modal_button_start">Start</button>
       </div>
@@ -44,6 +51,7 @@
         given for each guess in the form of colored tiles indicating when
         letters match (green) or occupy the correct position (orange)!
       </p>
+      
       <div class="modal_buttons">
         <button class="modal_button_close guide">Close</button>
       </div>
