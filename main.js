@@ -32,6 +32,38 @@ const myAPI = (callback) => {
   );
 };
 
+const checkIfWordExist = (word, callback) => {
+  const settings = {
+    async: true,
+    crossDomain: true,
+    url:
+      "https://twinword-word-graph-dictionary.p.rapidapi.com/association/?entry=" +
+      word,
+    method: "GET",
+    headers: {
+      "X-RapidAPI-Key": "47a48209d9mshd1a13fcd7d48010p1847d4jsn5ed0867d44a8",
+      "X-RapidAPI-Host": "twinword-word-graph-dictionary.p.rapidapi.com",
+    },
+  };
+
+  $.ajax(settings).then(
+    (response) => {
+      console.log(response.result_msg);
+      if (response.result_msg === "Success") {
+        if (typeof callback === "function") {
+          callback();
+          renderGame();
+        }
+      } else if (response.result_msg === "Entry word not found") {
+        popUp("This word does not exist!", "Please resubmit!", "Resubmit");
+      }
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+
 // const listOfWords = [
 //   "panda",
 //   "usual",
@@ -183,8 +215,12 @@ const checkAnswer = () => {
 
 const handleEnter = (keyLetter) => {
   gameState.currentTile === 5
-    ? checkAnswer()
+    ? checkIfWordExist(
+        gameState.gameRows[gameState.currentRow].join(""),
+        checkAnswer
+      )
     : popUp("Oh No!", "Please fill up a 5 letter word!", "Continue");
+  renderGame();
 };
 
 const handleBackspace = (keyLetter) => {
@@ -308,9 +344,14 @@ const main = () => {
       $modal.removeClass("modal_visible");
       renderGame();
     } else {
-      alert("sorry please wait");
+      popUp(
+        "Please hold!",
+        "Randomized word is currently generating!",
+        "Dismiss"
+      );
     }
   });
 };
 
 main();
+// checkIfWordExist("kkkk");
