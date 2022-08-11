@@ -45,3 +45,13 @@ Feedback is given through colours:
 
 (the answer is Budge!)
 ![](https://github.com/faithyeenxin/wordle/blob/main/gifs/tile_feedback.gif)
+
+7. Players would have 6 tries, if within a try he does not get the word correct he would move onto the next row of tiles in which he can answer his next guess.
+
+8. If a player was able to guess the word within the 6 tries/ player ran out of tries, the correct answer would then appear within the game board and a modal would pop up asking him if he would like to replay.
+
+9. Upon clicking the replay button, the game would restart. All tiles would be refreshed (emptied) and players can play again.
+   ![](https://github.com/faithyeenxin/wordle/blob/main/gifs/replay.gif)
+
+10. Local storage have been utilized to keep track of user's highscore (based on username entered). Scores can be reset by clicking the reset button.
+    ![](https://github.com/faithyeenxin/wordle/blob/main/gifs/scores.gif)
