@@ -19,8 +19,6 @@ const myAPI = (callback) => {
 
   $.ajax(settings).then(
     (response) => {
-      // console.log(response);
-      // console.log(Array.isArray(response));
       apiWords = response;
       if (typeof callback === "function") {
         callback();
@@ -48,7 +46,6 @@ const checkIfWordExist = (word, callback) => {
 
   $.ajax(settings).then(
     (response) => {
-      console.log(response.result_msg);
       if (response.result_msg === "Success") {
         if (typeof callback === "function") {
           callback();
@@ -150,15 +147,12 @@ const resetGame = () => {
   gameState.color = {};
   gameState.currentRow = 0;
   gameState.currentTile = 0;
-  console.log(apiWords);
   gameState.word =
     apiWords[Math.floor(Math.random() * apiWords.length)].toUpperCase();
-  console.log(gameState.word);
   renderGame();
 };
 
 const popUp = (title, descrip, buttonMessage) => {
-  console.log("button message was: " + buttonMessage);
   const $messageDisplay = $(".message_container");
   const $message = $("<p>").text(gameState.word);
   /* Diplay Correct Word */
@@ -176,7 +170,6 @@ const popUp = (title, descrip, buttonMessage) => {
       .off()
       .text(buttonMessage)
       .on("click", () => {
-        console.log("button clicked was: " + buttonMessage);
         $message.remove();
         if (buttonMessage === "Replay") {
           myAPI(resetGame);
@@ -191,10 +184,8 @@ const showIncorrect = () => {
   gameState.currentTile = 0;
   addColor();
   if (gameState.currentRow <= 5) {
-    console.log("try again was entered");
     popUp("Oh No!", "You got it wrong!", "Try Again");
   } else {
-    console.log("replay was entered cos ran out of tries");
     popUp("You ran out of tries!", "Would you like to play again?", "Replay");
   }
 };
@@ -203,7 +194,6 @@ const showCorrect = () => {
   gameState.currentRow++;
   gameState.currentTile = 0;
   addColor();
-  console.log("replay was entered cos show correct");
   popUp("You got it!", "Would you like to play again?", "Replay");
 };
 
@@ -323,7 +313,6 @@ const renderGame = () => {
 
 const main = () => {
   myAPI();
-  console.log(gameState.word);
   /* Start Game Modal */
   const $modal = $(".modal_start");
   window.onload = () => {
@@ -335,9 +324,6 @@ const main = () => {
   const $startBtn = $(".modal_button_start");
   $startBtn.on("click", () => {
     if (apiWords.length > 0) {
-      console.log("apiWords have been generated.");
-      console.log(apiWords);
-      console.log("gameState word has been assigned.");
       gameState.word =
         apiWords[Math.floor(Math.random() * apiWords.length)].toUpperCase();
       console.log("the word is:" + gameState.word);
