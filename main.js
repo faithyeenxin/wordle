@@ -517,11 +517,15 @@ const renderDictionaryModal = () => {
         .on("click", () => {
           let noun;
           let verb;
+          let adverb;
+          let adjective;
           let meaning;
           if (Object.keys(word.meaning).length > 0) {
             noun = word.meaning.noun.substring(0, 150) + "...";
             verb = word.meaning.verb.substring(0, 150) + "...";
-            meaning = noun + verb;
+            adverb = word.meaning.adverb.substring(0, 150) + "...";
+            adjective = word.meaning.adjective.substring(0, 150) + "...";
+            meaning = noun + verb + adverb + adjective;
           } else {
             meaning = "No meaning found in dictionary";
           }
@@ -610,10 +614,10 @@ const renderPlayersHighScore = () => {
       case "setItem":
         break;
       default:
-        console.log(player);
-        console.log(
-          "highscore: " + JSON.parse(localStorage.getItem(player)).highscore
-        );
+        // console.log(player);
+        // console.log(
+        //   "highscore: " + JSON.parse(localStorage.getItem(player)).highscore
+        // );
         const newPlayer = {
           name: player,
           highscore: JSON.parse(localStorage.getItem(player)).highscore,
@@ -626,12 +630,12 @@ const renderPlayersHighScore = () => {
     return b.highscore - a.highscore;
   });
 
-  console.log(allPlayers);
+  // console.log(allPlayers);
 
   const $leaderBoardContainer = $(".player_container").empty();
   for (let i = 0; i < 3; i++) {
     if (allPlayers[i] !== undefined) {
-      console.log(allPlayers[i]);
+      // console.log(allPlayers[i]);
       const $tr = $("<tr>");
       const $tdName = $("<td>").text(allPlayers[i].name);
       const $tdScore = $("<td>").text(allPlayers[i].highscore);
