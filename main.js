@@ -502,7 +502,7 @@ const renderDictionaryModal = () => {
   $dictBtn.off();
   $dictBtn.on("click", () => {
     /*add word data here!*/
-    const wordsToDisplay = gameState.storedData.words.slice(0, 3);
+    const wordsToDisplay = gameState.storedData.words.slice(-3);
     const $dictWordContainer = $(".all_words_container").empty();
     wordsToDisplay.forEach((word, index) => {
       console.log(word);
