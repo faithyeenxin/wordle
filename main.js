@@ -218,8 +218,8 @@ const popUp = (title, descrip, buttonMessage) => {
       .on("click", () => {
         $message.remove();
         if (buttonMessage === "Replay") {
-          // myAPI(resetGame); //ONLY SWITCH ON THIS LINE OF CODE WHEN NOT TESTING
-          resetGame();
+          myAPI(resetGame); //ONLY SWITCH ON THIS LINE OF CODE WHEN NOT TESTING
+          // resetGame();
         }
         if (buttonMessage === "Enter Valid Name") {
           $(".inputName").val("");
