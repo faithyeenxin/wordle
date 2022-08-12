@@ -506,13 +506,14 @@ const renderDictionaryModal = () => {
     const $dictWordContainer = $(".all_words_container").empty();
     wordsToDisplay.forEach((word, index) => {
       console.log(word);
-      const $wordTitle = $("<p>").text(word.name);
+      const $wordTitle = $("<h2>").text(word.name);
       const $wordBtnContainer = $("<div>").addClass("modal_buttons");
 
       const $meaningBtn = $("<button>")
         .off()
         .text("Meaning")
         .addClass("meaning_button_" + index)
+        .addClass("modal_button")
         .on("click", () => {
           let noun;
           let verb;
@@ -532,6 +533,7 @@ const renderDictionaryModal = () => {
         .off()
         .text("Synonyms")
         .addClass("synonyms_button_" + index)
+        .addClass("modal_button")
         .on("click", () => {
           popUp(word.name, word.synonyms.toString(), "Return to Words");
           $dictModal.removeClass("modal_visible");
@@ -588,12 +590,65 @@ const renderScoreModal = () => {
   });
 };
 
+const renderPlayersHighScore = () => {
+  const allPlayers = [];
+
+  for (const player in localStorage) {
+    switch (player) {
+      //components in localstorage: length, clear, getItem, key, removeItem, setItem
+      //>>!  i can't think of any other efficient way to exclude these
+      case "length":
+        break;
+      case "clear":
+        break;
+      case "getItem":
+        break;
+      case "key":
+        break;
+      case "removeItem":
+        break;
+      case "setItem":
+        break;
+      default:
+        console.log(player);
+        console.log(
+          "highscore: " + JSON.parse(localStorage.getItem(player)).highscore
+        );
+        const newPlayer = {
+          name: player,
+          highscore: JSON.parse(localStorage.getItem(player)).highscore,
+        };
+        allPlayers.push(newPlayer);
+    }
+  }
+
+  allPlayers.sort((a, b) => {
+    return b.highscore - a.highscore;
+  });
+
+  console.log(allPlayers);
+
+  const $leaderBoardContainer = $(".player_container").empty();
+  for (let i = 0; i < 3; i++) {
+    if (allPlayers[i] !== undefined) {
+      console.log(allPlayers[i]);
+      const $tr = $("<tr>");
+      const $tdName = $("<td>").text(allPlayers[i].name);
+      const $tdScore = $("<td>").text(allPlayers[i].highscore);
+      $tr.append($tdName).append($tdScore);
+      $leaderBoardContainer.append($tr);
+    }
+  }
+  return $leaderBoardContainer;
+};
+
 const renderLeaderBoardModal = () => {
   /* Leaderboard Modal */
   const $leaderModal = $(".modal_leader");
   const $leaderBtn = $(".leaderbtn");
   $leaderBtn.off();
   $leaderBtn.on("click", () => {
+    renderPlayersHighScore();
     $leaderModal.addClass("modal_visible");
   });
 
@@ -655,4 +710,6 @@ main();
 
 /* Clear local storage */
 // localStorage.clear();
+// console.log(localStorage);
+
 // console.log(localStorage);

@@ -29,7 +29,7 @@
         <input class="inputName" type="text"/>
       </form>
       <div class="modal_buttons">
-        <button class="modal_button_start">Start</button>
+        <button class="modal_button_start modal_button">Start</button>
       </div>
       <!-- to fix bug and remove this -->
       <div class="startButtonInstruction"><em>Click start button. Enter key on keyboard does not work.</em></div> 
@@ -41,7 +41,7 @@
       <h1 class="modal_title popup"></h1>
       <p class="modal_message popup"></p>
       <div class="modal_buttons">
-        <button class="modal_button_restart"></button>
+        <button class="modal_button_restart modal_button"></button>
       </div>
     </div>
   </div>
@@ -56,7 +56,7 @@
       </p>
       
       <div class="modal_buttons">
-        <button class="modal_button_close guide">Close</button>
+        <button class="modal_button_close modal_button guide">Close</button>
       </div>
     </div>
   </div>
@@ -72,7 +72,7 @@
       </p>
       
       <div class="modal_buttons">
-        <button class="modal_button_close dict">Close</button>
+        <button class="modal_button_close modal_button dict">Close</button>
       </div>
     </div>
   </div>
@@ -86,8 +86,8 @@
         <h2>High Score: <span class="highScore">0</span></h2><h2>Current Score: <span class="currentScore">0</span></h2>
       </p>
       <div class="modal_buttons">
-        <button class="modal_button_reset score">Reset Scores!</button>
-        <button class="modal_button_close score">Close</button>
+        <button class="modal_button_reset score modal_button">Reset Scores!</button>
+        <button class="modal_button_close score modal_button">Close</button>
       </div>
     </div>
   </div>
@@ -96,12 +96,26 @@
   <div class="modal modal_leader">
     <div class="modal_container leader">
       <h1 class="modal_title leader">Leaderboard!</h1>
-      <p class="modal_message leader">
-        Can you beat the top 3 players?
+      <p>
+        <em>Can you beat the top 3 players?</em>
+        <table class="player_container">
+          <tr>
+            <th>Name</th>
+            <th>Score</th>
+            
+          </tr>
+          <tr>
+            <td>Faith</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td>Jazzy</td>
+            <td>20</td>
+          </tr>
+        </table>
       </p>
-      
       <div class="modal_buttons">
-        <button class="modal_button_close leader">Close</button>
+        <button class="modal_button_close modal_button leader">Close</button>
       </div>
     </div>
   </div>
@@ -124,3 +138,4 @@
 </body>
 
 </html>
+
