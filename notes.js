@@ -60,7 +60,7 @@ simple getItem utilized
 2) High Score 
 3) Current Score 
 
-// ON SUBMITTING OF ANSWER & GETTING CORRECT:
+// ON SUBMITTING OF ANSWER & GETTING CORRECT: (✅ COMPLETED)
 1) handleClick() would channel "ENTER" submission to handleEnter()
 2) handleEnter() would check if current submission is valid:
 - check if 5 letter word entered (row tile ===5) if not show popup modal to fill up accurate no. of letters
@@ -73,17 +73,16 @@ simple getItem utilized
 - if correct: execute showCorrect()
 -if incorrect: execute showIncorrect()
 
-// ON SHOW CORRECT:
+// ON SHOW CORRECT: (✅ COMPLETED)
 1) once word is correct, showCorrect() would execute and it would then execute storeScore()
 2) storeScore() would retrieve the highscore saved in local storage and compare it to the current score of game,
-- if local storage high score is lower than current score of game, local storage of player would be re-set. *(!TO WORK ON!)*-to not set it immediately but just change state of player object
-- if local storage high score is higher, nothing happens
+- if local storage high score is lower than current score of game, local storage of player would be re-set. 
+- if local storage high score is higher, nothing happens (update state just to be sure)
 
 // ON RESET OF DATA:  
 1) user will be removed from local storage
 2) user data in local storage will all revert to original  *(!TO WORK ON!)*-to somehow utilize constructor function to create new empty player data
 3) current score state within game will also be reset 
-
 
 
 //////////////////////////////////////////////////////

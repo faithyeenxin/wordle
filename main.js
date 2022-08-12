@@ -5,6 +5,7 @@ import $ from "jquery";
 //////////////////////////////////////////////////////
 
 let apiWords = [""];
+
 const myAPI = (callback) => {
   console.log("my word generator API is being run");
   const settings = {
@@ -49,6 +50,7 @@ const checkIfWordExist = (word, callback) => {
   $.ajax(settings).then(
     (response) => {
       if (response.result_msg === "Success") {
+        gameState.wordSynonyms = response.assoc_word;
         if (typeof callback === "function") {
           callback();
           renderGame();
@@ -63,12 +65,49 @@ const checkIfWordExist = (word, callback) => {
   );
 };
 
+const getWordMeaning = () => {
+  console.log("my get word meaning API is being run");
+  const settings = {
+    async: true,
+    crossDomain: true,
+    url:
+      "https://twinword-word-graph-dictionary.p.rapidapi.com/definition/?entry=" +
+      gameState.word,
+    method: "GET",
+    headers: {
+      "X-RapidAPI-Key": "47a48209d9mshd1a13fcd7d48010p1847d4jsn5ed0867d44a8",
+      "X-RapidAPI-Host": "twinword-word-graph-dictionary.p.rapidapi.com",
+    },
+  };
+
+  $.ajax(settings).then(
+    (response) => {
+      if (response.result_msg === "Success") {
+        console.log("the meaning of the word is ");
+        console.log(response.meaning);
+        gameState.wordMeaning = response.meaning;
+      } else if (response.result_msg === "Entry word not found") {
+        popUp(
+          "This word has no meaning!",
+          "This shouldn't be happening",
+          "Close"
+        );
+      }
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+
 //////////////////////////////////////////////////////
 //// * STATE
 //////////////////////////////////////////////////////
 
 const gameState = {
   word: "",
+  wordSynonyms: [],
+  wordMeaning: {},
   keys: [
     "Q",
     "W",
@@ -117,32 +156,19 @@ const gameState = {
   storedData: {
     name: "Faith",
     highscore: 0,
-    words: {
-      pineapple: {
-        synonyms: [],
-        meaning: {
-          noun: " ",
-          verb: " ",
-          adverb: " ",
-          adjective: " ",
-        },
-      },
-
-      durian: {
-        synonyms: [],
-        meaning: {
-          noun: " ",
-          verb: " ",
-          adverb: " ",
-          adjective: " ",
-        },
-      },
-    },
+    words: [],
   },
 };
 //////////////////////////////////////////////////////
 //// * CONSTRUCTOR FUNCTION
 //////////////////////////////////////////////////////
+
+class Word {
+  constructor(name, synonyms, meaning) {
+    (this.name = name), (this.synonyms = synonyms), (this.meaning = meaning);
+  }
+}
+
 class Player {
   constructor(name, highscore, wordsObj) {
     (this.name = name), (this.highscore = highscore), (this.words = wordsObj);
@@ -154,14 +180,17 @@ class Player {
 //////////////////////////////////////////////////////
 
 const resetGame = () => {
-  gameState.gameRows = [
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-    ["", "", "", "", ""],
-  ];
+  (gameState.word = ""),
+    (gameState.wordSynonyms = []),
+    (gameState.wordMeaning = {}),
+    (gameState.gameRows = [
+      ["", "", "", "", ""],
+      ["", "", "", "", ""],
+      ["", "", "", "", ""],
+      ["", "", "", "", ""],
+      ["", "", "", "", ""],
+      ["", "", "", "", ""],
+    ]);
   gameState.color = {};
   gameState.currentRow = 0;
   gameState.currentTile = 0;
@@ -204,12 +233,24 @@ const popUp = (title, descrip, buttonMessage) => {
 };
 
 const updateStoredDataWord = () => {
-  // 1) check if length of object is less than 5:
-  // - if more than 5 need to remove latest word
-  // - if less than 5 proceed to next step
-  //
-  // >> add word into storedData and local storage (prolly can create function that stores storedData into localStorage?)
-  //
+  // 1) collect word's synonyms + definition (use API)
+  const storedWord = new Word(
+    gameState.word,
+    gameState.wordSynonyms,
+    gameState.wordMeaning
+  );
+  // 2)  add word into storedData and local storage (prolly can create function that stores storedData into localStorage?)
+
+  gameState.storedData.words.push(storedWord);
+
+  const updatedPlayerData = new Player(
+    gameState.playerName,
+    gameState.storedData.highscore,
+    gameState.storedData.words
+  );
+  localStorage.setItem(gameState.playerName, JSON.stringify(updatedPlayerData));
+
+  console.log(JSON.parse(localStorage.getItem(gameState.playerName)));
 };
 
 const storeScore = () => {
@@ -245,7 +286,7 @@ const showCorrect = () => {
   gameState.currentTile = 0;
   gameState.score++;
   storeScore();
-  updateStoredDataWord();
+  updateStoredDataWord(); //to work on this function!!
   addColor();
   popUp("You got it!", "Would you like to play again?", "Replay");
 };
@@ -327,7 +368,7 @@ const checkUserExist = (playerName) => {
   if (storedUser === null) {
     console.log("user does not exist and is being created");
     /* call my constructor function to create new player data */
-    const newPlayerData = new Player(playerName, 0, {});
+    const newPlayerData = new Player(playerName, 0, []);
     /*save the new data created as state*/
     gameState.storedData = newPlayerData;
 
@@ -416,7 +457,9 @@ const renderStartModal = () => {
     if (apiWords.length > 0) {
       gameState.word =
         apiWords[Math.floor(Math.random() * apiWords.length)].toUpperCase();
+      getWordMeaning();
       console.log("the start word is: " + gameState.word);
+
       $modal.removeClass("modal_visible");
 
       const playerName = $(".inputName").val();
@@ -490,7 +533,7 @@ const renderScoreModal = () => {
   $resetScoreBtn.on("click", () => {
     localStorage.removeItem(gameState.playerName);
 
-    const newPlayerData = new Player(playerName, 0, {});
+    const newPlayerData = new Player(playerName, 0, []);
     gameState.storedData = newPlayerData;
     localStorage.setItem(
       gameState.playerName,
@@ -544,6 +587,7 @@ const main = () => {
     if (apiWords.length > 0) {
       gameState.word =
         apiWords[Math.floor(Math.random() * apiWords.length)].toUpperCase();
+      getWordMeaning();
       console.log("the start word is: " + gameState.word);
       $modal.removeClass("modal_visible");
 
@@ -566,13 +610,7 @@ const main = () => {
 };
 
 main();
-// renderStartModal();
 
 /* Clear local storage */
 // localStorage.clear();
 // console.log(localStorage);
-
-// const newPlayerData = new Player("faith", 10, { pineapples: "it's sour" });
-// localStorage.setItem("faith", JSON.stringify(newPlayerData));
-// console.log(localStorage);
-// console.log(localStorage.getItem("faith"));
