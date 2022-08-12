@@ -93,7 +93,7 @@ input{
   text-align: center;
 }
 
-.modal_buttons {
+.modal_buttons{
   display: flex;
   justify-content: space-evenly;
 }

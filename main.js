@@ -83,8 +83,6 @@ const getWordMeaning = () => {
   $.ajax(settings).then(
     (response) => {
       if (response.result_msg === "Success") {
-        console.log("the meaning of the word is ");
-        console.log(response.meaning);
         gameState.wordMeaning = response.meaning;
       } else if (response.result_msg === "Entry word not found") {
         popUp(
@@ -226,6 +224,10 @@ const popUp = (title, descrip, buttonMessage) => {
         if (buttonMessage === "Enter Valid Name") {
           $(".inputName").val("");
           renderStartModal();
+        }
+        if (buttonMessage === "Return to Words") {
+          $modal.removeClass("modal_visible");
+          $(".modal_dict").addClass("modal_visible");
         }
         $modal.removeClass("modal_visible");
       });
@@ -496,8 +498,48 @@ const renderDictionaryModal = () => {
   /* Dictionary Modal */
   const $dictModal = $(".modal_dict");
   const $dictBtn = $(".dictbtn");
+
   $dictBtn.off();
   $dictBtn.on("click", () => {
+    /*add word data here!*/
+    const wordsToDisplay = gameState.storedData.words.slice(0, 3);
+    const $dictWordContainer = $(".all_words_container").empty();
+    wordsToDisplay.forEach((word, index) => {
+      console.log(word);
+      const $wordTitle = $("<p>").text(word.name);
+      const $wordBtnContainer = $("<div>").addClass("modal_buttons");
+
+      const $meaningBtn = $("<button>")
+        .off()
+        .text("Meaning")
+        .addClass("meaning_button_" + index)
+        .on("click", () => {
+          let noun;
+          let verb;
+          let meaning;
+          if (Object.keys(word.meaning).length > 0) {
+            noun = word.meaning.noun.substring(0, 150) + "...";
+            verb = word.meaning.verb.substring(0, 150) + "...";
+            meaning = noun + verb;
+          } else {
+            meaning = "No meaning found in dictionary";
+          }
+
+          popUp(word.name, meaning, "Return to Words");
+          $dictModal.removeClass("modal_visible");
+        });
+      const $synonymsBtn = $("<button>")
+        .off()
+        .text("Synonyms")
+        .addClass("synonyms_button_" + index)
+        .on("click", () => {
+          popUp(word.name, word.synonyms.toString(), "Return to Words");
+          $dictModal.removeClass("modal_visible");
+        });
+      $wordBtnContainer.append($meaningBtn).append($synonymsBtn);
+      $dictWordContainer.append($wordTitle).append($wordBtnContainer);
+    });
+
     $dictModal.addClass("modal_visible");
   });
 
