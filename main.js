@@ -6,6 +6,7 @@ import $ from "jquery";
 
 let apiWords = [""];
 const myAPI = (callback) => {
+  console.log("my word generator API is being run");
   const settings = {
     async: true,
     crossDomain: true,
@@ -31,6 +32,7 @@ const myAPI = (callback) => {
 };
 
 const checkIfWordExist = (word, callback) => {
+  console.log("my check word API is being run");
   const settings = {
     async: true,
     crossDomain: true,
@@ -108,11 +110,44 @@ const gameState = {
   color: {
     letter: "green_overlay",
   },
-  playerName: "",
   currentRow: 0,
   currentTile: 0,
+  playerName: "",
   score: 0,
+  storedData: {
+    name: "Faith",
+    highscore: 0,
+    words: {
+      pineapple: {
+        synonyms: [],
+        meaning: {
+          noun: " ",
+          verb: " ",
+          adverb: " ",
+          adjective: " ",
+        },
+      },
+
+      durian: {
+        synonyms: [],
+        meaning: {
+          noun: " ",
+          verb: " ",
+          adverb: " ",
+          adjective: " ",
+        },
+      },
+    },
+  },
 };
+//////////////////////////////////////////////////////
+//// * CONSTRUCTOR FUNCTION
+//////////////////////////////////////////////////////
+class Player {
+  constructor(name, highscore, wordsObj) {
+    (this.name = name), (this.highscore = highscore), (this.words = wordsObj);
+  }
+}
 
 //////////////////////////////////////////////////////
 //// * FUNCTIONS
@@ -136,43 +171,6 @@ const resetGame = () => {
   renderGame();
 };
 
-const storeScore = () => {
-  const userHighScore = JSON.parse(
-    localStorage.getItem(gameState.playerName)
-  ).score;
-  if (userHighScore < gameState.score) {
-    localStorage.setItem(
-      gameState.playerName,
-      JSON.stringify({ name: gameState.playerName, score: gameState.score })
-    );
-    const highScore = JSON.parse(
-      localStorage.getItem(gameState.playerName)
-    ).score;
-    console.log("Your highscore is " + highScore);
-    console.log("Your current score is " + gameState.score);
-  } else {
-    const highScore = JSON.parse(
-      localStorage.getItem(gameState.playerName)
-    ).score;
-    console.log("Your highscore is " + highScore);
-    console.log("Your current score is " + gameState.score);
-  }
-};
-
-const checkUserExist = () => {
-  const storedUser = localStorage.getItem(gameState.playerName);
-
-  if (storedUser === null) {
-    console.log("user does not exist and has been created");
-    localStorage.setItem(
-      gameState.playerName,
-      JSON.stringify({ name: gameState.playerName, score: gameState.score })
-    );
-  } else {
-    console.log("the user exists: " + storedUser);
-  }
-};
-
 const popUp = (title, descrip, buttonMessage) => {
   const $messageDisplay = $(".message_container");
   const $message = $("<p>").text(gameState.word);
@@ -193,12 +191,42 @@ const popUp = (title, descrip, buttonMessage) => {
       .on("click", () => {
         $message.remove();
         if (buttonMessage === "Replay") {
-          myAPI(resetGame); //ONLY SWITCH ON THIS LINE OF CODE WHEN NOT TESTING
-          // resetGame();
+          // myAPI(resetGame); //ONLY SWITCH ON THIS LINE OF CODE WHEN NOT TESTING
+          resetGame();
+        }
+        if (buttonMessage === "Enter Valid Name") {
+          $(".inputName").val("");
+          renderStartModal();
         }
         $modal.removeClass("modal_visible");
       });
   }, 500);
+};
+
+const updateStoredDataWord = () => {
+  // 1) check if length of object is less than 5:
+  // - if more than 5 need to remove latest word
+  // - if less than 5 proceed to next step
+  //
+  // >> add word into storedData and local storage (prolly can create function that stores storedData into localStorage?)
+  //
+};
+
+const storeScore = () => {
+  const userHighScore = JSON.parse(
+    localStorage.getItem(gameState.playerName)
+  ).highscore;
+  /* update highscore if current score is higher than local storage highscore */
+  if (userHighScore < gameState.score) {
+    gameState.storedData.highscore = gameState.score;
+    localStorage.setItem(
+      gameState.playerName,
+      JSON.stringify(gameState.storedData)
+    );
+  } else {
+    /* update score state to match local storage*/
+    gameState.storedData.highscore = userHighScore;
+  }
 };
 
 const showIncorrect = () => {
@@ -217,6 +245,7 @@ const showCorrect = () => {
   gameState.currentTile = 0;
   gameState.score++;
   storeScore();
+  updateStoredDataWord();
   addColor();
   popUp("You got it!", "Would you like to play again?", "Replay");
 };
@@ -293,12 +322,51 @@ const addKeyColor = (keyLetter) => {
   }
 };
 
+const checkUserExist = (playerName) => {
+  const storedUser = localStorage.getItem(gameState.playerName);
+  if (storedUser === null) {
+    console.log("user does not exist and is being created");
+    /* call my constructor function to create new player data */
+    const newPlayerData = new Player(playerName, 0, {});
+    /*save the new data created as state*/
+    gameState.storedData = newPlayerData;
+
+    /*save the new data created in local storage*/
+    localStorage.setItem(
+      gameState.playerName,
+      JSON.stringify(gameState.storedData)
+    );
+
+    console.log(localStorage.getItem(gameState.playerName));
+  } else {
+    console.log("the user exists: " + storedUser);
+    gameState.storedData = JSON.parse(
+      localStorage.getItem(gameState.playerName)
+    );
+  }
+};
+
 const savePlayerName = (playerName) => {
-  //figure out why local storage is saving this entire code lol
-  const lowerCasePlayerName = playerName.toLowerCase();
+  const lowerCasePlayerName = playerName.trim().toLowerCase();
   const reformattedPlayerName =
     lowerCasePlayerName.charAt(0).toUpperCase() + lowerCasePlayerName.slice(1);
   gameState.playerName = reformattedPlayerName;
+};
+
+const validatePlayerName = (playerName) => {
+  if (playerName.trim().length !== 0) {
+    /* save as state */
+    savePlayerName(playerName);
+    /* save to local storage */
+    checkUserExist(gameState.playerName);
+    renderGame();
+  } else {
+    popUp(
+      "This is not a name!",
+      "Name should not consist of all spaces",
+      "Enter Valid Name"
+    );
+  }
 };
 
 //////////////////////////////////////////////////////
@@ -338,12 +406,126 @@ const renderKeyBoard = () => {
   });
 };
 
+const renderStartModal = () => {
+  /* Start Game Modal */
+  const $modal = $(".modal_start");
+  $modal.addClass("modal_visible");
+  const $startBtn = $(".modal_button_start");
+  $startBtn.off();
+  $startBtn.on("click", () => {
+    if (apiWords.length > 0) {
+      gameState.word =
+        apiWords[Math.floor(Math.random() * apiWords.length)].toUpperCase();
+      console.log("the start word is: " + gameState.word);
+      $modal.removeClass("modal_visible");
+
+      const playerName = $(".inputName").val();
+      validatePlayerName(playerName);
+
+      console.log(localStorage);
+    } else {
+      popUp(
+        "Please hold!",
+        "Randomized word is currently generating!",
+        "Dismiss"
+      );
+    }
+  });
+};
+
+const renderGuideModal = () => {
+  /* Guide Modal */
+  const $guideModal = $(".modal_guide");
+  const $guideBtn = $(".guidebtn");
+  $guideBtn.off();
+  $guideBtn.on("click", () => {
+    $guideModal.addClass("modal_visible");
+  });
+
+  const $closePopupBtn = $(".modal_button_close.guide");
+  $closePopupBtn.off();
+  $closePopupBtn.on("click", () => {
+    $guideModal.removeClass("modal_visible");
+  });
+};
+
+const renderDictionaryModal = () => {
+  /* Dictionary Modal */
+  const $dictModal = $(".modal_dict");
+  const $dictBtn = $(".dictbtn");
+  $dictBtn.off();
+  $dictBtn.on("click", () => {
+    $dictModal.addClass("modal_visible");
+  });
+
+  const $closeDictBtn = $(".modal_button_close.dict");
+  $closeDictBtn.off();
+  $closeDictBtn.on("click", () => {
+    $dictModal.removeClass("modal_visible");
+  });
+};
+
+const renderScoreModal = () => {
+  /* Score Modal */
+  const $scoreModal = $(".modal_score");
+  const $highScore = $(".highScore");
+  const $currentScore = $(".currentScore");
+  const $scoreTitle = $(".modal_title.score");
+  const $scoreBtn = $(".scorebtn");
+  $scoreBtn.off();
+  $scoreBtn.on("click", () => {
+    $scoreTitle.text("Hello there " + gameState.playerName + "!");
+    $highScore.text(gameState.storedData.highscore);
+    $currentScore.text(gameState.score);
+    $scoreModal.addClass("modal_visible");
+  });
+  const $closeScoreBtn = $(".modal_button_close.score");
+  $closeScoreBtn.off();
+  $closeScoreBtn.on("click", () => {
+    $scoreModal.removeClass("modal_visible");
+  });
+
+  const $resetScoreBtn = $(".modal_button_reset.score");
+  $resetScoreBtn.off();
+  $resetScoreBtn.on("click", () => {
+    localStorage.removeItem(gameState.playerName);
+
+    const newPlayerData = new Player(playerName, 0, {});
+    gameState.storedData = newPlayerData;
+    localStorage.setItem(
+      gameState.playerName,
+      JSON.stringify(gameState.storedData)
+    );
+    gameState.score = 0;
+    $highScore.text(0);
+    $currentScore.text(0);
+    console.log(localStorage);
+  });
+};
+
+const renderLeaderBoardModal = () => {
+  /* Leaderboard Modal */
+  const $leaderModal = $(".modal_leader");
+  const $leaderBtn = $(".leaderbtn");
+  $leaderBtn.off();
+  $leaderBtn.on("click", () => {
+    $leaderModal.addClass("modal_visible");
+  });
+
+  const $closeLeaderBtn = $(".modal_button_close.leader");
+  $closeLeaderBtn.off();
+  $closeLeaderBtn.on("click", () => {
+    $leaderModal.removeClass("modal_visible");
+  });
+};
+
 const renderGame = () => {
   renderTileBoard();
   renderKeyBoard();
 };
 
 const main = () => {
+  console.log("entire game is being run again");
   console.log(localStorage);
   gameState.playerName = "";
   myAPI();
@@ -366,9 +548,7 @@ const main = () => {
       $modal.removeClass("modal_visible");
 
       const playerName = $(".inputName").val();
-      savePlayerName(playerName);
-      checkUserExist();
-      renderGame();
+      validatePlayerName(playerName);
       console.log(localStorage);
     } else {
       popUp(
@@ -379,58 +559,20 @@ const main = () => {
     }
   });
 
-  /* Guide Modal */
-  const $guideModal = $(".modal_guide");
-  const $guideBtn = $(".guidebtn");
-  $guideBtn.off();
-  $guideBtn.on("click", () => {
-    $guideModal.addClass("modal_visible");
-  });
-
-  const $closePopupBtn = $(".modal_button_close.guide");
-  $closePopupBtn.off();
-  $closePopupBtn.on("click", () => {
-    $guideModal.removeClass("modal_visible");
-  });
-
-  /* Score Modal */
-  const $scoreModal = $(".modal_score");
-  const $highScore = $(".highScore");
-  const $currentScore = $(".currentScore");
-  const $scoreTitle = $(".modal_title.score");
-  const $scoreBtn = $(".scorebtn");
-  $scoreBtn.off();
-  $scoreBtn.on("click", () => {
-    $scoreTitle.text(
-      "Hello there " +
-        JSON.parse(localStorage.getItem(gameState.playerName)).name +
-        "!"
-    );
-    $highScore.text(
-      JSON.parse(localStorage.getItem(gameState.playerName)).score
-    );
-    $currentScore.text(gameState.score);
-    $scoreModal.addClass("modal_visible");
-  });
-  const $closeScoreBtn = $(".modal_button_close.score");
-  $closeScoreBtn.off();
-  $closeScoreBtn.on("click", () => {
-    $scoreModal.removeClass("modal_visible");
-  });
-
-  const $resetScoreBtn = $(".modal_button_reset.score");
-  $resetScoreBtn.off();
-  $resetScoreBtn.on("click", () => {
-    localStorage.removeItem(gameState.playerName);
-    localStorage.setItem(
-      gameState.playerName,
-      JSON.stringify({ name: gameState.playerName, score: 0 })
-    );
-    gameState.score = 0;
-    $highScore.text(0);
-    $currentScore.text(0);
-    console.log(localStorage);
-  });
+  renderGuideModal();
+  renderDictionaryModal();
+  renderScoreModal();
+  renderLeaderBoardModal();
 };
 
 main();
+// renderStartModal();
+
+/* Clear local storage */
+// localStorage.clear();
+// console.log(localStorage);
+
+// const newPlayerData = new Player("faith", 10, { pineapples: "it's sour" });
+// localStorage.setItem("faith", JSON.stringify(newPlayerData));
+// console.log(localStorage);
+// console.log(localStorage.getItem("faith"));

@@ -82,7 +82,7 @@ input{
   border-radius: 0.7rem;
 }
 
-.modal_container h1 {
+.modal_container h1, h2{
   text-align: center;
 }
 
