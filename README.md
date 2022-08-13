@@ -76,4 +76,4 @@ Feedback is given through colours:
 ## Tech Stack Utilized
 
 - HTML & CSS
-- Javascript (jQuery + API)
+- Javascript (jQuery + API using AJAX)
